@@ -38,7 +38,7 @@
                 </div>
             </div>
 
-            <TaskList :tasks="tasks" @edit="editTask" @delete="deleteTask" />
+            <TaskList :tasks="tasks" @edit="editTask" @delete="confirmDelete" />
         </div>
     </AuthenticatedLayout>
 </template>
@@ -68,11 +68,10 @@ const openCreateForm = () => {
 };
 
 const saveTask = (task) => {
-    console.log(task);
     if (task.id) {
         router.put(route('tasks.put', task.id), task, {
             onSuccess: () => {
-                router.visit(route('tasks.index'));
+                router.visit(route('dashboard'));
                 resetForm();
                 Swal.fire({
                     icon: 'success',
@@ -94,7 +93,7 @@ const saveTask = (task) => {
     } else {
         router.post(route('tasks.store'), task, {
             onSuccess: () => {
-                router.visit(route('tasks.index'));
+                router.visit(route('dashboard'));
                 resetForm();
                 Swal.fire({
                     icon: 'success',
@@ -130,7 +129,45 @@ const editTask = (task) => {
     });
 };
 
+const confirmDelete = (taskId) => {
+    Swal.fire({
+        title: 'Tem certeza?',
+        text: 'Essa ação não poderá ser desfeita!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sim, deletar!',
+        cancelButtonText: 'Cancelar',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Envia a requisição para deletar a tarefa
+            deleteTask(taskId);
+        }
+    });
+};
+
 const deleteTask = (taskId) => {
-    // Excluir tarefa (lógica no backend via Inertia)
+    router.delete(route('tasks.destroy', taskId), {
+        onSuccess: () => {
+            router.visit(route('dashboard'));
+            resetForm();
+            Swal.fire({
+                icon: 'success',
+                title: 'Tarefa deletada com sucesso!',
+                confirmButtonText: 'Fechar',
+            });
+        },
+        onError: (errors) => {
+            const errorMessages = Object.values(errors).flat();
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro ao deletar',
+                html: errorMessages.join('<br>'),
+                confirmButtonText: 'Fechar',
+            });
+        },
+    });
 };
 </script>

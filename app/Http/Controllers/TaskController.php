@@ -11,7 +11,9 @@ class TaskController extends Controller
     public function __construct(
         private readonly Task $task
     )
-    {}
+    {
+    }
+
     public function index()
     {
         $tasks = $this->task->orderByDesc('created_at')->userTasks()->paginate(5);
@@ -29,7 +31,7 @@ class TaskController extends Controller
             'user_id' => $request->user()->id
         ]);
 
-        return to_route('tasks.index');
+        return to_route('dashboard');
     }
 
     public function update(string $id, TaskRequest $request)
@@ -49,11 +51,15 @@ class TaskController extends Controller
             'status' => $validated['status'],
         ]);
 
-        return to_route('tasks.index');
+        return to_route('dashboard');
     }
 
-    public function delete(string $id)
+    public function destroy(string $id)
     {
+        /** Buscando a tarefa vinculada ao usuario */
+        $task = $this->task->where(['id' => $id, 'user_id' => auth()->user()->id])->firstOrFail();
+        $task->delete();
 
+        return to_route('dashboard');
     }
 }
