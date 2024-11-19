@@ -69,7 +69,7 @@ class TaskController extends Controller
         $task = $this->task->where(['id' => $id])->firstOrFail();
         $task->delete();
 
-        return redirect()->back();
+        return to_route('admin.users.tasks', $task->user_id);
     }
 
     /** Listagem de tarefas de um usuário em especifico */
