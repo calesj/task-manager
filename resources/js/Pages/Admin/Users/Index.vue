@@ -279,7 +279,7 @@ function deleteUser(userId) {
             resetForm();
             Swal.fire({
                 icon: 'success',
-                title: 'Tarefa deletada com sucesso!',
+                title: 'Usuário deletado com sucesso!',
                 confirmButtonText: 'Fechar',
             });
         },
