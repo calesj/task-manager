@@ -9,6 +9,7 @@ Route::group(['prefix' => 'admin','middleware' => ['auth', 'admin']], function (
     /** Usuários */
     Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
     Route::put('/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
+    Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('admin.users.destroy');
 
     /** Tarefas */
     Route::get('/users/{id}/tasks', [TaskController::class, 'tasksByUser'])->name('admin.users.tasks');
