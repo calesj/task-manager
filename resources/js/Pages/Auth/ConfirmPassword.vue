@@ -22,8 +22,8 @@ const submit = () => {
         <Head title="Confirm Password" />
 
         <div class="mb-4 text-sm text-gray-600">
-            This is a secure area of the application. Please confirm your
-            password before continuing.
+            Esta é uma área segura do aplicativo. Por favor confirme seu senha
+            senha antes de continuar.
         </div>
 
         <form @submit.prevent="submit">
