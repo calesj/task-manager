@@ -106,7 +106,7 @@
                                     Editar
                                 </button>
                                 <button
-                                    @click="deleteUser(user.id)"
+                                    @click="confirmDelete(user.id)"
                                     class="flex items-center gap-2 text-sm font-medium text-red-500 transition-all hover:text-red-700"
                                 >
                                     <svg
@@ -273,8 +273,46 @@ function saveUser(form) {
 }
 
 function deleteUser(userId) {
+    router.delete(route('admin.users.destroy', userId), {
+        onSuccess: () => {
+            router.visit(route('admin.users.index'));
+            resetForm();
+            Swal.fire({
+                icon: 'success',
+                title: 'Tarefa deletada com sucesso!',
+                confirmButtonText: 'Fechar',
+            });
+        },
+        onError: (errors) => {
+            const errorMessages = Object.values(errors).flat();
 
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro ao deletar',
+                html: errorMessages.join('<br>'),
+                confirmButtonText: 'Fechar',
+            });
+        },
+    });
 }
+
+const confirmDelete = (userId) => {
+    Swal.fire({
+        title: 'Tem certeza?',
+        text: 'Essa ação não poderá ser desfeita!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sim, deletar!',
+        cancelButtonText: 'Cancelar',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Envia a requisição para deletar a tarefa
+            deleteUser(userId);
+        }
+    });
+};
 
 function viewTasks(userId) {
     router.get(route('admin.users.tasks', { id: userId }));
