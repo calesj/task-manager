@@ -42,7 +42,9 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink
                                     v-if="$page.props.auth.user.is_admin"
                                     :href="route('admin.users.index')"
-                                    :active="route().current('admin.users.index')"
+                                    :active="
+                                        route().current('admin.users.index')
+                                    "
                                     class="flex items-center gap-2"
                                 >
                                     Usuários
