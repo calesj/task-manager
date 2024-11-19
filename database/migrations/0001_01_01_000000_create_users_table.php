@@ -30,6 +30,13 @@ return new class extends Migration
             'password' => bcrypt('password'),
         ]);
 
+        User::create([
+            'name' => 'user',
+            'email' => 'user@email.com',
+            'is_admin' => true,
+            'password' => bcrypt('password'),
+        ]);
+
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');

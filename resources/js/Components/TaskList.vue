@@ -23,7 +23,7 @@ const emit = defineEmits(['edit', 'delete']);
 
 defineProps({
     tasks: {
-        type: Array || Object,
+        type: Object,
         required: true,
     },
 });
