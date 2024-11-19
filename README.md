@@ -54,6 +54,7 @@ Este é um sistema simples de gerenciamento de tarefas desenvolvido com **Larave
 - **Testes:** Pest PHP
 - **Bibliotecas Extras:**
   - SweetAlert para confirmações visuais.
+  - Laravel Breeze (Starter Kit Laravel)
 
 ---
 
