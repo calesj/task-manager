@@ -20,6 +20,6 @@ class Admin
             return $next($request);
         }
 
-        return Response::HTTP_FORBIDDEN;
+        abort(403);
     }
 }

@@ -65,7 +65,7 @@ class TaskController extends Controller
             'status' => $validated['status'],
         ]);
 
-        return to_route('admin.users.index');
+        return to_route('dashboard');
     }
 
     /** Destruir tarefa */
@@ -75,7 +75,7 @@ class TaskController extends Controller
         $task = $this->task->where(['id' => $id, 'user_id' => auth()->user()->id])->firstOrFail();
         $task->delete();
 
-        return to_route('admin.users.index');
+        return to_route('dashboard');
     }
 
     /** Listagem de tarefas de um usuário em especifico */
