@@ -110,6 +110,12 @@ import { usePage } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Swal from 'sweetalert2';
 
+defineProps({
+    userId: {
+        required: true,
+    },
+});
+
 const { props } = usePage();
 const tasks = ref(props.tasks || []);
 const showCreateForm = ref(false);
@@ -144,9 +150,9 @@ const openCreateForm = () => {
 
 const saveTask = (task) => {
     if (task.id) {
-        router.put(route('tasks.update', task.id), task, {
+        router.put(route('admin.tasks.update', task.id), task, {
             onSuccess: () => {
-                router.visit(route('dashboard'));
+                router.visit(route('admin.users.tasks', props.userId));
                 resetForm();
                 Swal.fire({
                     icon: 'success',
@@ -166,9 +172,9 @@ const saveTask = (task) => {
             },
         });
     } else {
-        router.post(route('tasks.store'), task, {
+        router.post(route('admin.tasks.store', props.userId), task, {
             onSuccess: () => {
-                router.visit(route('dashboard'));
+                router.visit(route('admin.users.tasks', props.userId));
                 resetForm();
                 Swal.fire({
                     icon: 'success',
@@ -223,9 +229,9 @@ const confirmDelete = (taskId) => {
 };
 
 const deleteTask = (taskId) => {
-    router.delete(route('tasks.destroy', taskId), {
+    router.delete(route('admin.tasks.destroy', taskId), {
         onSuccess: () => {
-            router.visit(route('dashboard'));
+            router.visit(route('admin.users.tasks', props.userId));
             resetForm();
             Swal.fire({
                 icon: 'success',

@@ -277,6 +277,6 @@ function deleteUser(userId) {
 }
 
 function viewTasks(userId) {
-    router.get(route('admin.users.tasks', { userId: userId }));
+    router.get(route('admin.users.tasks', { id: userId }));
 }
 </script>
