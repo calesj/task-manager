@@ -2,24 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\Filters;
 use App\Http\Requests\TaskRequest;
 use App\Models\Task;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class TaskController extends Controller
 {
+    use Filters;
+
     public function __construct(
         private readonly Task $task
     )
+    {}
+
+    /** Listar tarefas (somente as suas) */
+    public function index(Request $request)
     {
+        $query = $this->task->userTasks();
+
+        $tasks = $this->filters($request, $query);
+
+        return Inertia::render('Task/Index',
+            [
+                'tasks' => $tasks,
+                'filters' => $request->only(['status', 'orderBy', 'direction'])
+            ]
+        );
     }
 
-    public function index()
-    {
-        $tasks = $this->task->orderByDesc('created_at')->userTasks()->paginate(5);
-        return Inertia::render('Task', ['tasks' => $tasks]);
-    }
-
+    /** Cadastrar tarefa */
     public function store(TaskRequest $request)
     {
         $validated = $request->validated();
@@ -34,6 +47,7 @@ class TaskController extends Controller
         return to_route('dashboard');
     }
 
+    /** Atualizar tarefa */
     public function update(string $id, TaskRequest $request)
     {
         /** Buscando a tarefa vinculada ao usuario */
@@ -51,15 +65,34 @@ class TaskController extends Controller
             'status' => $validated['status'],
         ]);
 
-        return to_route('dashboard');
+        return to_route('admin.users.index');
     }
 
+    /** Destruir tarefa */
     public function destroy(string $id)
     {
         /** Buscando a tarefa vinculada ao usuario */
         $task = $this->task->where(['id' => $id, 'user_id' => auth()->user()->id])->firstOrFail();
         $task->delete();
 
-        return to_route('dashboard');
+        return to_route('admin.users.index');
+    }
+
+    /** Listagem de tarefas de um usuário em especifico */
+    public function tasksByUser(string $userId, Request $request)
+    {
+        $query = $this->task->where(['user_id' => $userId]);
+        $tasks = $this->filters($request, $query);
+
+        if ($tasks->isEmpty()) {
+            return response()->json(['status' => 204]);
+        }
+
+        return Inertia::render('Task/Index',
+            [
+                'tasks' => $tasks,
+                'filters' => $request->only(['status', 'orderBy', 'direction'])
+            ]
+        );
     }
 }
