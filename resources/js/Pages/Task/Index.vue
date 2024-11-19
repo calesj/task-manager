@@ -1,11 +1,9 @@
 <template>
     <AuthenticatedLayout>
+        <Head title="Tarefas" />
         <div class="container mx-auto p-8">
             <div class="mb-6 flex items-center justify-between">
-                <!-- Título à esquerda -->
                 <h1 class="text-2xl font-bold">Gerenciamento de Tarefas</h1>
-
-                <!-- Botão à direita -->
                 <button
                     @click="openCreateForm"
                     class="rounded-lg bg-green-500 px-4 py-2 text-white transition-colors hover:bg-green-600"
@@ -14,14 +12,60 @@
                 </button>
             </div>
 
+            <!-- Filtros -->
+            <div class="mb-4 flex items-center gap-4">
+                <div>
+                    <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                    <select
+                        id="status"
+                        v-model="filters.status"
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm"
+                    >
+                        <option value="all">Todos</option>
+                        <option value="pending">Pendente</option>
+                        <option value="progress">Em Andamento</option>
+                        <option value="completed">Concluído</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="orderBy" class="block text-sm font-medium text-gray-700">Ordenar por</label>
+                    <select
+                        id="orderBy"
+                        v-model="filters.orderBy"
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm"
+                    >
+                        <option value="created_at">Data de Criação</option>
+                        <option value="updated_at">Data de Atualização</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="direction" class="block text-sm font-medium text-gray-700">Ordem</label>
+                    <select
+                        id="direction"
+                        v-model="filters.direction"
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm"
+                    >
+                        <option value="asc">Crescente</option>
+                        <option value="desc">Decrescente</option>
+                    </select>
+                </div>
+
+                <button
+                    @click="applyFilters"
+                    class="mt-6 rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+                >
+                    Aplicar Filtros
+                </button>
+            </div>
+
             <!-- Card de Formulário -->
             <div
                 v-if="showCreateForm"
                 class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50"
             >
-                <div
-                    class="relative w-full max-w-lg rounded-lg bg-white p-6 shadow-lg"
-                >
+                <div class="relative w-full max-w-lg rounded-lg bg-white p-6 shadow-lg">
                     <!-- Botão de Fechar -->
                     <button
                         @click="resetForm"
@@ -44,8 +88,8 @@
 </template>
 
 <script setup>
-import { router } from '@inertiajs/vue3';
-import { ref, nextTick } from 'vue';
+import { Head, router } from "@inertiajs/vue3";
+import { nextTick, ref } from "vue";
 import TaskList from '@/Components/TaskList.vue';
 import TaskForm from '@/Components/TaskForm.vue';
 import { usePage } from '@inertiajs/vue3';
@@ -56,6 +100,24 @@ const { props } = usePage();
 const tasks = ref(props.tasks || []);
 const showCreateForm = ref(false);
 const editingTask = ref(null);
+
+
+// Filtros
+const filters = ref({
+    status: props.filters.status || 'all', // Padrão para 'Todos'
+    orderBy: props.filters.orderBy || 'created_at',
+    direction: props.filters.direction || 'desc',
+});
+
+const applyFilters = () => {
+    const queryParams = {
+        status: filters.value.status,
+        orderBy: filters.value.orderBy,
+        direction: filters.value.direction,
+    };
+
+    router.get(route('dashboard'), queryParams);
+};
 
 const resetForm = () => {
     showCreateForm.value = false;
