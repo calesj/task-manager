@@ -25,7 +25,7 @@ Este é um sistema simples de gerenciamento de tarefas desenvolvido com **Larave
 - Usuários comuns só podem gerenciar suas próprias tarefas.
 
 #### Tela de Tarefas
-![Tarefas](https://github.com/user-attachments/assets/8ce0c226-a12c-40ea-8501-02c7a657d34e)
+![image](https://github.com/user-attachments/assets/627ccbd9-d486-4f09-9230-f6b2fc8c7c22)
 
 ---
 
