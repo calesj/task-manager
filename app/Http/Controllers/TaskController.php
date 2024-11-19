@@ -77,22 +77,4 @@ class TaskController extends Controller
 
         return to_route('dashboard');
     }
-
-    /** Listagem de tarefas de um usuário em especifico */
-    public function tasksByUser(string $userId, Request $request)
-    {
-        $query = $this->task->where(['user_id' => $userId]);
-        $tasks = $this->filters($request, $query);
-
-        if ($tasks->isEmpty()) {
-            return response()->json(['status' => 204]);
-        }
-
-        return Inertia::render('Task/Index',
-            [
-                'tasks' => $tasks,
-                'filters' => $request->only(['status', 'orderBy', 'direction'])
-            ]
-        );
-    }
 }
